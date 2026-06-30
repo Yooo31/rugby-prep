@@ -16,6 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Historique complet : `fallow audit` compare les fichiers changés à une base.
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -40,7 +43,12 @@ jobs:
         run: pnpm test:cov
 
       - name: fallow audit
-        run: pnpm fallow:audit
+        env:
+          # PR : la base est la branche cible ; push : on compare à main.
+          FALLOW_BASE: ${{ github.base_ref || 'main' }}
+        run: |
+          git fetch --no-tags origin "$FALLOW_BASE" || true
+          npx --yes fallow@2 audit --format json --base "origin/$FALLOW_BASE"
 
       - name: Build
         run: pnpm build
