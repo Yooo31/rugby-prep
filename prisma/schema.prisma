@@ -1,0 +1,17 @@
+// Schéma Prisma — source de vérité de la base.
+// Prisma 7 : les URLs de connexion vivent dans `prisma.config.ts`
+// (pooler pour l'app via DATABASE_URL, connexion directe pour les migrations
+// via DIRECT_URL). Le bloc datasource ne porte plus que le provider.
+// Voir CLAUDE.md §Prisma + Supabase.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Aucun modèle métier au jalon 0 (scaffolding). Les modèles arriveront
+// avec les features (profil, programme, retours…), via `prisma migrate dev`.

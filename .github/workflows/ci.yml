@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Annule les runs précédents d'une même branche/PR.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: typecheck → lint → test → fallow → build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Historique complet : `fallow audit` compare les fichiers changés à une base.
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      # `postinstall` lance `prisma generate` (client requis pour typecheck/build).
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test + coverage (seuil 90 %)
+        run: pnpm test:cov
+
+      - name: fallow audit
+        env:
+          # PR : la base est la branche cible ; push : on compare à main.
+          FALLOW_BASE: ${{ github.base_ref || 'main' }}
+        run: |
+          git fetch --no-tags origin "$FALLOW_BASE" || true
+          npx --yes fallow@2 audit --format json --base "origin/$FALLOW_BASE"
+
+      - name: Build
+        run: pnpm build

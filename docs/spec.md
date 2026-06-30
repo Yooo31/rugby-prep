@@ -203,7 +203,6 @@ Champ texte libre.
 Exemple :
 
 > Bonne séance mais les jambes étaient très lourdes.
-> 
 
 ---
 
@@ -228,7 +227,6 @@ Champ libre.
 Exemple :
 
 > Très bonne semaine mais récupération difficile après le match.
-> 
 
 ---
 
