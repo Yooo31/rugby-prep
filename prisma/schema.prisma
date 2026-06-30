@@ -91,6 +91,8 @@ model Week {
   profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
   weekNumber Int
   sessions   Session[]
+  // JSON brut renvoyé par le générateur (LLM) — provenance / historique / debug.
+  generatedPayload Json?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
@@ -102,14 +104,34 @@ model Week {
 // (name/order/status) ; le contenu détaillé (objectif, durée, exercices — spec §6)
 // arrivera avec le jalon programme via migration.
 model Session {
-  id        String        @id @default(cuid())
-  weekId    String
-  week      Week          @relation(fields: [weekId], references: [id], onDelete: Cascade)
-  name      String
-  order     Int
-  status    SessionStatus @default(A_FAIRE)
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+  id          String        @id @default(cuid())
+  weekId      String
+  week        Week          @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  name        String
+  objective   String
+  durationMin Int
+  order       Int
+  status      SessionStatus @default(A_FAIRE)
+  exercises   Exercise[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 
   @@index([weekId])
+}
+
+// Exercice d'une séance (contenu détaillé, spec §6).
+model Exercise {
+  id          String   @id @default(cuid())
+  sessionId   String
+  session     Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name        String
+  description String
+  sets        Int
+  reps        String // "8-12", "10", "30s"… (répétitions ou durée)
+  restSeconds Int
+  order       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sessionId])
 }

@@ -97,7 +97,12 @@ src/
 
 ## Moteur de génération (`program-generation`)
 
-Cœur du produit (cahier des charges §9). **Décision d'archi MVP : moteur déterministe à base de règles**, pas d'appel LLM — pour la testabilité et le typage. Entrées : profil, programme précédent, retours de séances, bilan hebdo. Sortie : programme de la semaine suivante avec charge ajustée. Doit être couvert à ~100 % par des tests unitaires (cas par poste, objectif, fatigue, etc.).
+Cœur du produit (cahier des charges §9). **Décision d'archi : génération par LLM (ChatGPT)** — un prompt construit depuis le profil (objectif, durée, nb séances, poste, environnement, saison) ; le LLM renvoie un **JSON** structuré (semaine → séances → exercices). _(Cette décision remplace le « moteur déterministe » initialement envisagé.)_
+
+- **Contrat de sortie** : `programPlanSchema` (Zod, `program-generation/schemas`). La sortie du LLM est **systématiquement revalidée** (source non fiable) avant persistance — c'est la garantie de typage/robustesse à la place du déterminisme.
+- **Interface unique** : `generateProgramPlan(input): Promise<ProgramPlan>` — **mockée** pour l'instant (déterministe, ~100 % testée) ; l'appel ChatGPT réel (prompt + fetch + clé API) sera branché en dernier au même point, sans toucher au reste.
+- **Persistance** : action `generateProgram` (`program-generation/server`) — `getAuthUser()`, scope `user.id`, `weekNumber = max+1`, transaction `Week` (+ `generatedPayload` = JSON brut pour l'historique/provenance) → `Session` → `Exercise`.
+- **Adaptation « semaine suivante »** (profil + programme précédent + retours + bilan) : viendra après les jalons retour de séance (§7) et bilan (§8).
 
 ## Qualité & CI
 

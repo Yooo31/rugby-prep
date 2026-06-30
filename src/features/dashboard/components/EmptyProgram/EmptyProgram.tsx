@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GenerateProgramButton } from "@/features/program-generation";
 
 export function EmptyProgram() {
   return (
@@ -13,12 +13,11 @@ export function EmptyProgram() {
       <CardHeader>
         <CardTitle>Aucun programme pour le moment</CardTitle>
         <CardDescription>
-          Ton premier programme personnalisé arrivera bientôt.
+          Génère ton premier programme personnalisé.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* La génération du programme est un jalon ultérieur. */}
-        <Button disabled>Générer mon programme</Button>
+        <GenerateProgramButton />
       </CardContent>
     </Card>
   );
