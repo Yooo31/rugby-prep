@@ -84,6 +84,14 @@ src/
 - Types dérivés des schémas Zod (`z.infer`) plutôt que redéclarés.
 - Pas de logique métier dans `app/` : elle vit dans `features/*/server` ou `features/*/hooks`.
 
+## Auth (Supabase)
+
+- Auth via **Supabase Auth** + `@supabase/ssr` (pas de NextAuth). Clients : `src/lib/supabase/{server,client}.ts`.
+- Session rafraîchie et **routes protégées** par `src/middleware.ts` (helper `updateSession` dans `src/lib/supabase/middleware.ts`). Routes publiques : `/login`, `/signup`, `/forgot-password`, `/update-password`, `/auth/*`, `/error`.
+- Côté serveur, toujours `supabase.auth.getUser()` (jamais `getSession()`).
+- **Formulaires** : `react-hook-form` + `zodResolver` (validation client) adossés à des **Server Actions** (`features/auth/server/actions.ts`) qui revalident le schéma Zod (défense en profondeur). Pattern mutualisé : `AuthFormShell` + `AuthTextField` + hook `useAuthSubmit`.
+- Confirmation d'email et reset de mot de passe via `app/auth/confirm/route.ts` (`verifyOtp`). `NEXT_PUBLIC_SITE_URL` requis pour les redirections d'emails.
+
 ## Moteur de génération (`program-generation`)
 
 Cœur du produit (cahier des charges §9). **Décision d'archi MVP : moteur déterministe à base de règles**, pas d'appel LLM — pour la testabilité et le typage. Entrées : profil, programme précédent, retours de séances, bilan hebdo. Sortie : programme de la semaine suivante avec charge ajustée. Doit être couvert à ~100 % par des tests unitaires (cas par poste, objectif, fatigue, etc.).
