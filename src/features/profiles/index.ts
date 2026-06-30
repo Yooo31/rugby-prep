@@ -10,9 +10,9 @@ export {
   SESSION_DURATIONS,
 } from "./schemas/profile.schema";
 export {
-  Environnement,
-  Jour,
-  Objectif,
-  Poste,
-  Saison,
-} from "@/generated/prisma/enums";
+  POSTE_LABELS,
+  OBJECTIF_LABELS,
+  ENVIRONNEMENT_LABELS,
+  SAISON_LABELS,
+  JOUR_LABELS,
+} from "./labels";
