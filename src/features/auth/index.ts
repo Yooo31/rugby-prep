@@ -3,3 +3,4 @@ export { SignupForm } from "./components/SignupForm";
 export { ForgotPasswordForm } from "./components/ForgotPasswordForm";
 export { UpdatePasswordForm } from "./components/UpdatePasswordForm";
 export { SignOutButton } from "./components/SignOutButton";
+export { getAuthUser } from "./server/getAuthUser";
