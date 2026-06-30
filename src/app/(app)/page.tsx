@@ -1,18 +1,32 @@
 import { SignOutButton } from "@/features/auth";
-import { getProfileForUser } from "@/features/profiles/server";
+import {
+  EmptyProgram,
+  PlayerSummary,
+  ProgramOverview,
+} from "@/features/dashboard";
+import { getDashboardData } from "@/features/dashboard/server";
 
-export default async function HomePage() {
-  const profile = await getProfileForUser();
+export default async function DashboardPage() {
+  const data = await getDashboardData();
+  // Le layout du groupe (app) garantit déjà un Profile ; garde de sûreté.
+  if (!data) {
+    return null;
+  }
 
   return (
-    <main className="flex min-h-svh flex-col items-center justify-center gap-4 p-4">
-      <h1 className="text-2xl font-semibold">
-        Bonjour {profile?.firstName} 👋
-      </h1>
-      <p className="text-muted-foreground">
-        Ton tableau de bord arrive bientôt.
-      </p>
-      <SignOutButton />
+    <main className="mx-auto flex min-h-svh w-full max-w-2xl flex-col gap-6 p-4 sm:p-6">
+      <header className="flex items-center justify-between gap-4">
+        <h1 className="text-2xl font-semibold">Tableau de bord</h1>
+        <SignOutButton />
+      </header>
+
+      <PlayerSummary
+        firstName={data.firstName}
+        position={data.position}
+        goal={data.goal}
+      />
+
+      {data.week ? <ProgramOverview week={data.week} /> : <EmptyProgram />}
     </main>
   );
 }

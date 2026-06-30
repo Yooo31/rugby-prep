@@ -71,6 +71,45 @@ model Profile {
   season          Saison
   trainingDays    Jour[]        @default([])
   matchDay        Jour?
+  weeks           Week[]
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
+}
+
+// Statut d'une séance dans le tableau de bord (spec §5).
+enum SessionStatus {
+  A_FAIRE
+  EN_COURS
+  TERMINEE
+}
+
+// Programme d'une semaine pour un profil. La « semaine courante » est celle
+// dont le weekNumber est le plus élevé.
+model Week {
+  id         String    @id @default(cuid())
+  profileId  String
+  profile    Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  weekNumber Int
+  sessions   Session[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([profileId, weekNumber])
+  @@index([profileId])
+}
+
+// Séance d'une semaine. Volontairement minimal au jalon dashboard
+// (name/order/status) ; le contenu détaillé (objectif, durée, exercices — spec §6)
+// arrivera avec le jalon programme via migration.
+model Session {
+  id        String        @id @default(cuid())
+  weekId    String
+  week      Week          @relation(fields: [weekId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int
+  status    SessionStatus @default(A_FAIRE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([weekId])
 }
