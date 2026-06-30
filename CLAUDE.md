@@ -35,13 +35,18 @@ DATABASE_URL="postgresql://...:6543/postgres?pgbouncer=true&connection_limit=1"
 DIRECT_URL="postgresql://...:5432/postgres"
 ```
 
-```prisma
-datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
-}
-```
+> **⚠️ Prisma 7** : les URLs ne vivent plus dans le bloc `datasource` du schéma
+> (qui ne porte que `provider`) mais dans `prisma.config.ts`, et la connexion
+> runtime passe par un **driver adapter**. Concrètement :
+>
+> - `prisma/schema.prisma` : `datasource db { provider = "postgresql" }` +
+>   `generator client { provider = "prisma-client" output = "../src/generated/prisma" }`.
+> - `prisma.config.ts` : `datasource.url = process.env.DIRECT_URL` (connexion
+>   **directe**, utilisée par la CLI / migrations).
+> - `src/lib/db.ts` (singleton) : `new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) })`
+>   → l'app passe par le **pooler**.
+> - Le client généré (`src/generated/`) n'est **pas versionné** ; `prisma generate`
+>   tourne via le script `postinstall`.
 
 - Instancier le client Prisma en **singleton** (éviter l'épuisement de connexions en dev/hot-reload).
 - Migrations via `prisma migrate dev` ; jamais de modif manuelle de la base.
@@ -94,7 +99,13 @@ Pipeline GitHub Actions (bloquant) : `typecheck` → `lint` → `test --coverage
 
 ## Design system
 
-Charte graphique = design tokens en variables CSS (`styles/globals.css`) + `tailwind.config`. Thèmes clair/sombre. ShadCN consomme ces tokens. Toute couleur/espacement/typo passe par un token, jamais de valeur en dur.
+Charte graphique = design tokens en variables CSS. Thèmes clair/sombre. ShadCN consomme ces tokens. Toute couleur/espacement/typo passe par un token, jamais de valeur en dur.
+
+> **⚠️ Tailwind v4 (CSS-first)** : pas de `tailwind.config.js`. Les tokens et le
+> thème sont déclarés en CSS dans **`src/app/globals.css`** (`@import "tailwindcss";`,
+> `@theme inline { … }`, `:root` / `.dark`). Le fichier vit dans `src/app/`
+> (convention Next.js + chemin pointé par `components.json`), pas dans `src/styles/`
+> — ce dernier reste disponible pour d'éventuels partials de tokens.
 
 ## UX (rappels produit)
 

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
+
+  // Modules d'infrastructure transverses : points d'entrée de la lib applicative.
+  // Ils seront consommés par les features (auth, program…) ; on les déclare ici
+  // pour ne pas les voir signalés comme "fichiers morts" pendant le scaffolding.
+  "entry": ["src/lib/db.ts", "src/lib/supabase/*.ts"],
+
+  // Fondations installées (shadcn + validation) pas encore importées au jalon 0.
+  // À retirer dès qu'un composant UI / schéma Zod les utilise réellement.
+  "ignoreDependencies": [
+    "class-variance-authority",
+    "lucide-react",
+    "radix-ui",
+    "zod",
+  ],
+
+  // Le client Prisma généré n'est pas versionné et ne doit pas être analysé.
+  "ignorePatterns": ["src/generated/**"],
+}

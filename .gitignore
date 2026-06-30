@@ -1,24 +1,38 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # dependencies
-node_modules/
+/node_modules
 .pnpm-store/
+/.pnp
+.pnp.*
+
+# testing / coverage
+/coverage
 
 # next.js
-.next/
-out/
-build/
-
-# test / coverage
-coverage/
-
-# env
-.env
-.env*.local
+/.next/
+/out/
+/build
 
 # prisma generated client
-src/generated/
+/src/generated/
 
 # misc
 .DS_Store
+*.pem
 *.log
+.pnpm-debug.log*
+
+# env files (never commit secrets; keep the example)
+.env
+.env*.local
+.env.development
+.env.production
+!.env.example
+
+# vercel
 .vercel
+
+# typescript
+*.tsbuildinfo
 next-env.d.ts
