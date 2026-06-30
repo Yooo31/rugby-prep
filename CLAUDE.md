@@ -76,7 +76,7 @@ src/
   styles/                   # globals.css (design tokens)
 ```
 
-**Features prévues** : `auth`, `onboarding`, `dashboard`, `program`, `session-feedback`, `weekly-review`, `program-generation`, `history`.
+**Features prévues** : `auth`, `onboarding`, `profiles`, `dashboard`, `program`, `session-feedback`, `weekly-review`, `program-generation`, `history`.
 
 ### Conventions
 
@@ -84,6 +84,8 @@ src/
 - Composants en PascalCase, hooks en `useXxx`, schémas Zod en `xxxSchema`.
 - Types dérivés des schémas Zod (`z.infer`) plutôt que redéclarés.
 - Pas de logique métier dans `app/` : elle vit dans `features/*/server` ou `features/*/hooks`.
+- **Frontière client/serveur (RSC)** : l'`index.ts` d'une feature ne doit exposer que du **client-safe** (composants `"use client"`, Server Actions `"use server"`, schémas/enums isomorphes). Les fonctions d'accès données **serveur-only** (ex. lecture Prisma utilisant `next/headers`) sont exposées via `features/<feature>/server` et importées uniquement par des Server Components, pour ne pas fuiter dans le bundle client.
+- **Routage par état** : garde en Server Component (layout du groupe `(app)` → exige un `Profile`, sinon `/onboarding` ; `/onboarding` renvoie au dashboard si le profil existe). Pas de Prisma dans le middleware (Edge).
 
 ## Auth (Supabase)
 

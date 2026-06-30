@@ -13,5 +13,64 @@ datasource db {
   provider = "postgresql"
 }
 
-// Aucun modèle métier au jalon 0 (scaffolding). Les modèles arriveront
-// avec les features (profil, programme, retours…), via `prisma migrate dev`.
+// --- Enums métier (spec §4) ---
+
+enum Poste {
+  PILIER
+  TALONNEUR
+  DEUXIEME_LIGNE
+  TROISIEME_LIGNE
+  DEMI_MELEE
+  DEMI_OUVERTURE
+  CENTRE
+  AILIER
+  ARRIERE
+}
+
+enum Objectif {
+  MUSCULATION
+  EXPLOSIVITE
+  VITESSE
+  ENDURANCE
+  RETOUR_BLESSURE
+}
+
+enum Environnement {
+  MAISON
+  SALLE_COMPLETE
+}
+
+enum Saison {
+  INTER_SAISON
+  DEBUT_SAISON
+  MILIEU_SAISON
+  FIN_SAISON
+}
+
+enum Jour {
+  LUNDI
+  MARDI
+  MERCREDI
+  JEUDI
+  VENDREDI
+  SAMEDI
+  DIMANCHE
+}
+
+// Profil joueur. `id` = identifiant de l'utilisateur Supabase (auth.users).
+// L'autorisation est applicative : l'id provient toujours de getAuthUser(),
+// jamais du client (cf. CLAUDE.md TIER 1).
+model Profile {
+  id              String        @id
+  firstName       String
+  position        Poste
+  goal            Objectif
+  sessionsPerWeek Int // 1..5 (borné par Zod)
+  sessionDuration Int // ∈ {30,45,60,90} (borné par Zod)
+  environment     Environnement
+  season          Saison
+  trainingDays    Jour[]        @default([])
+  matchDay        Jour?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
