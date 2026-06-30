@@ -4,8 +4,14 @@
   // Client Prisma généré (non versionné).
   "ignorePatterns": ["src/generated/**"],
 
-  // Primitives ShadCN/UI vendored (générées par CLI) : API du design system.
-  // En entry, leurs exports comptent comme « utilisés » et leurs imports
-  // (radix-ui, lucide-react, cva, sonner…) restent suivis.
-  "entry": ["src/components/ui/**"],
+  "entry": [
+    // Primitives ShadCN/UI vendored (générées par CLI) : API du design system.
+    // En entry, leurs exports comptent comme « utilisés » et leurs imports
+    // (radix-ui, lucide-react, cva, sonner…) restent suivis.
+    "src/components/ui/**",
+    // Modules d'infrastructure transverses, consommés au fil des features
+    // (le client navigateur Supabase et Prisma ne le sont pas encore).
+    "src/lib/db.ts",
+    "src/lib/supabase/*.ts",
+  ],
 }

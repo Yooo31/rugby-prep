@@ -10,6 +10,7 @@
 - **Ne jamais committer de secret.** `.env` jamais versionné. Variables sensibles via Supabase / GitHub Secrets.
 - **Commits conventionnels** (`feat:`, `fix:`, `chore:`, `test:`…). Petits commits, fréquents.
 - **Ne pas inventer le contenu d'un fichier non lu.** Toujours lire avant de modifier.
+- **Autorisation = couche applicative, PAS RLS** (Prisma contourne RLS). Toute fonction d'accès données récupère l'utilisateur via `getAuthUser()` et scope la requête par son id. Jamais d'id venant du client.
 
 ## Stack
 
