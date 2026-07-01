@@ -49,9 +49,11 @@ export async function updateSession(
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Visiteur non connecté → inscription en premier (meilleure rétention client),
+  // le formulaire d'inscription renvoie vers /login pour les comptes existants.
   if (!user && !isPublic(request.nextUrl.pathname)) {
     const url = request.nextUrl.clone();
-    url.pathname = "/login";
+    url.pathname = "/signup";
     return NextResponse.redirect(url);
   }
 
