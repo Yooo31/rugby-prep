@@ -24,7 +24,7 @@ export function GenerateProgramButton() {
           {error}
         </p>
       ) : null}
-      <Button onClick={onClick} disabled={isPending}>
+      <Button variant="accent" onClick={onClick} disabled={isPending}>
         {isPending ? "Génération…" : "Générer mon programme"}
       </Button>
     </div>

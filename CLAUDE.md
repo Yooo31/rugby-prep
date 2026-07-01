@@ -115,6 +115,8 @@ Pipeline GitHub Actions (bloquant) : `typecheck` → `lint` → `test --coverage
 
 ## Design system
 
+Design : docs/design-system.md fait foi.
+
 Charte graphique = design tokens en variables CSS. Thèmes clair/sombre. ShadCN consomme ces tokens. Toute couleur/espacement/typo passe par un token, jamais de valeur en dur.
 
 > **⚠️ Tailwind v4 (CSS-first)** : pas de `tailwind.config.js`. Les tokens et le
