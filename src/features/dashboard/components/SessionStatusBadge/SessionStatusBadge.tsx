@@ -8,13 +8,14 @@ const STATUS_LABELS: Record<SessionStatus, string> = {
 };
 
 // Variantes = tokens du design system (aucune couleur en dur).
+// docs/design-system.md : À faire = neutre, En cours = accent lime, Terminée = primary vert.
 const STATUS_VARIANTS: Record<
   SessionStatus,
-  "outline" | "default" | "secondary"
+  "secondary" | "accent" | "default"
 > = {
-  A_FAIRE: "outline",
-  EN_COURS: "default",
-  TERMINEE: "secondary",
+  A_FAIRE: "secondary",
+  EN_COURS: "accent",
+  TERMINEE: "default",
 };
 
 export function SessionStatusBadge({ status }: { status: SessionStatus }) {
